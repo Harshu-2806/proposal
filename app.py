@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 CORS(app)
+application = app 
 try:
     pdfmetrics.registerFont(TTFont('MicrosoftSansSerif', os.path.join(BASE_DIR, 'microsoftsansserif.ttf')))
     print("✅ Microsoft Sans Serif font registered successfully")
@@ -116,7 +117,7 @@ class InCorpCanvas(pdfcanvas.Canvas):
         try:
             header_path = os.path.join(BASE_DIR, 'incorp_header.png')
             if os.path.exists(header_path):
-                self.drawImage('incorp_header.png', 
+                self.drawImage(header_path, 
                              0.5 , letter[1] - 1*inch,
                              width=7.5*inch, height=1*inch,
                              preserveAspectRatio=False, mask='auto')
@@ -1454,7 +1455,7 @@ def generate_proposal_word():
         return jsonify({'error': str(e)}), 500
 if __name__ == '__main__':
     os.makedirs('static_pdfs', exist_ok=True)
-    application = app 
+    
     
     print("="*60)
     print("InCorp Proposal Generator - FINAL VERSION")
