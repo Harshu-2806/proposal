@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InCorp Proposal Generator - All Frequencies</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section h2::before {
+            content: '📋';
+            margin-right: 10px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.95em;
+        }
+        
+        input, select, textarea {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .service-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .service-checkbox:hover {
+            background: #f0f4ff;
+            transform: translateX(3px);
+        }
+        
+        .service-checkbox input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+        
+        .service-checkbox label {
+            cursor: pointer;
+            margin: 0;
+            font-size: 1.05em;
+            flex: 1;
+        }
+        
+        .service-content {
+            display: none;
+            margin-top: 10px;
+            padding: 20px;
+            background: white;
+            border-radius: 6px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .service-content.active {
+            display: block;
+        }
+
+        .nested-table-container {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+
+        .nested-table-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .nested-entry {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .add-entry-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .add-entry-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .remove-entry-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-entry-btn:hover {
+            background: #c82333;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            display: block;
+            margin: 40px auto 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .generate-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            text-align: center;
+            border: 1px solid #c3e6cb;
+        }
+
+        .subsection-title {
+            color: #555;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>InCorp Proposal Generator</h1>
+       
+        
+        <form id="proposalForm">
+            <!-- Client Information -->
+            <div class="section">
+                <h2>Client Information</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clientName">Client Name *</label>
+                        <input type="text" id="clientName" name="clientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientDesignation">Client Designation *</label>
+                        <input type="text" id="clientDesignation" name="clientDesignation" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clientCompany">Client Company Name *</label>
+                        <input type="text" id="clientCompany" name="clientCompany" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="proposalDate">Proposal Date *</label>
+                        <input type="date" id="proposalDate" name="proposalDate" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="clientAddress">Client Company Address *</label>
+                        <textarea id="clientAddress" name="clientAddress" required></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="companyYear">Company Established Year</label>
+                        <input type="text" id="companyYear" name="companyYear" placeholder="e.g., 2020">
+                    </div>
+                    <div class="form-group">
+                        <label for="scopeOfServices">Scope of Services Description</label>
+                        <textarea id="scopeOfServices" name="scopeOfServices" placeholder="Describe the scope of work..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- A. One Time Handover Service -->
+            <div class="section">
+                <h2>A. One Time Handover Service</h2>
+                
+                <div class="service-checkbox">
+                    <input type="checkbox" id="sectionA" name="sectionA" onchange="toggleSection('sectionAContent')">
+                    <label for="sectionA">Enable One Time Handover Services</label>
+                </div>
+                
+                <div id="sectionAContent" class="service-content">
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeHandover" name="includeHandover" onchange="toggleService('handoverContent')">
+                        <label for="includeHandover">Handover from erstwhile service provider</label>
+                    </div>
+                    <div id="handoverContent" class="service-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Frequency</label>
+                                <select name="handoverFrequency">
+                                    <option value="Monthly">Monthly</option>
+                                    <option value="One-time" selected>One-time</option>
+                                    <option value="Quarterly">Quarterly</option>
+                                    <option value="Annual">Annual</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Fee (USD)</label>
+                                <input type="number" name="handoverFee" value="0" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeDueDiligence" name="includeDueDiligence" onchange="toggleService('ddContent')">
+                        <label for="includeDueDiligence">Basic due diligence</label>
+                    </div>
+                    <div id="ddContent" class="service-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Frequency</label>
+                                <select name="ddFrequency">
+                                    <option value="Monthly">Monthly</option>
+                                    <option value="One-time" selected>One-time</option>
+                                    <option value="Quarterly">Quarterly</option>
+                                    <option value="Annual">Annual</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Fee (USD)</label>
+                                <input type="number" name="dueDiligenceFee" value="0" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- B. Incorporation Service -->
+            <div class="section">
+                <h2>B. Incorporation / Secretarial Service</h2>
+                
+                <div class="service-checkbox">
+                    <input type="checkbox" id="sectionB" name="sectionB" onchange="toggleSection('sectionBContent')">
+                    <label for="sectionB">Enable Incorporation / Secretarial Services</label>
+                </div>
+                
+                <div id="sectionBContent" class="service-content">
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeIncorporation" name="includeIncorporation" onchange="toggleService('incorporationContent')">
+                        <label for="includeIncorporation">Incorporation (PAN, TAN, EPF, ESI included)</label>
+                    </div>
+                    <div id="incorporationContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="incorporationFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeGST" name="includeGST" onchange="toggleService('gstContent')">
+                        <label for="includeGST">GST Registration (single location)</label>
+                    </div>
+                    <div id="gstContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="gstRegFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeFCGPR" name="includeFCGPR" onchange="toggleService('fcgprContent')">
+                        <label for="includeFCGPR">FCGPR Filing with Reserve Bank of India</label>
+                    </div>
+                    <div id="fcgprContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="fcgprFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeROC" name="includeROC" onchange="toggleService('rocContent')">
+                        <label for="includeROC">Statutory Compliances with ROC</label>
+                    </div>
+                    <div id="rocContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="rocComplianceFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <h3 class="subsection-title">Optional Registrations</h3>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeIEC" name="includeIEC" onchange="toggleService('iecContent')">
+                        <label for="includeIEC">Import Export Code (IEC Code)</label>
+                    </div>
+                    <div id="iecContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="iecFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includePT" name="includePT" onchange="toggleService('ptContent')">
+                        <label for="includePT">Profession Tax (PT)</label>
+                    </div>
+                    <div id="ptContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="ptFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeBEN" name="includeBEN" onchange="toggleService('benContent')">
+                        <label for="includeBEN">Beneficial Ownership Form BEN-2</label>
+                    </div>
+                    <div id="benContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="benFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeMGT" name="includeMGT" onchange="toggleService('mgtContent')">
+                        <label for="includeMGT">MGT Forms Filing (MGT 4, 5, 6)</label>
+                    </div>
+                    <div id="mgtContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="mgtFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includePAN" name="includePAN" onchange="toggleService('panContent')">
+                        <label for="includePAN">Physical PAN Card</label>
+                    </div>
+                    <div id="panContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="panCardFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeTrademark" name="includeTrademark" onchange="toggleService('trademarkContent')">
+                        <label for="includeTrademark">Trademark Registration</label>
+                    </div>
+                    <div id="trademarkContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="trademarkFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeForeignPAN" name="includeForeignPAN" onchange="toggleService('foreignPanContent')">
+                        <label for="includeForeignPAN">PAN for foreign director</label>
+                    </div>
+                    <div id="foreignPanContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="foreignPanFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeBankAssist" name="includeBankAssist" onchange="toggleService('bankContent')">
+                        <label for="includeBankAssist">Bank account opening assistance</label>
+                    </div>
+                    <div id="bankContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="bankAssistFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nominee Director Service -->
+            <div class="section">
+                <h2>Nominee Director and Registered Office</h2>
+                
+                <div class="service-checkbox">
+                    <input type="checkbox" id="sectionNominee" name="sectionNominee" onchange="toggleSection('sectionNomineeContent')">
+                    <label for="sectionNominee">Enable Nominee Director and Registered Office Services</label>
+                </div>
+                
+                <div id="sectionNomineeContent" class="service-content">
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeRegOffice" name="includeRegOffice" onchange="toggleService('regOfficeContent')">
+                        <label for="includeRegOffice">Registered Office Service</label>
+                    </div>
+                    <div id="regOfficeContent" class="service-content">
+                        <div class="form-group">
+                            <label>Monthly Fee (USD)</label>
+                            <input type="number" name="registeredOfficeFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeNomineeDir" name="includeNomineeDir" onchange="toggleService('nomineeDirContent')">
+                        <label for="includeNomineeDir">Nominee Director Service</label>
+                    </div>
+                    <div id="nomineeDirContent" class="service-content">
+                        <div class="form-group">
+                            <label>Monthly Fee (USD)</label>
+                            <input type="number" name="nomineeDirectorFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- C. Accounting/Tax/Payroll Services -->
+            <div class="section">
+                <h2>C. Accounting / Tax / Payroll Services</h2>
+                
+                <div class="service-checkbox">
+                    <input type="checkbox" id="sectionC" name="sectionC" onchange="toggleSection('sectionCContent')">
+                    <label for="sectionC">Enable Accounting / Tax / Payroll Services</label>
+                </div>
+                
+                <div id="sectionCContent" class="service-content">
+                    <h3 class="subsection-title">Direct Tax Compliances</h3>
+                
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeAdvanceTax" name="includeAdvanceTax" onchange="toggleService('advanceTaxContent')">
+                    <label for="includeAdvanceTax">Advance tax Compliances</label>
+                </div>
+                <div id="advanceTaxContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="advanceTaxFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly" selected>Quarterly</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="advanceTaxFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeTDS" name="includeTDS" onchange="toggleService('tdsContent')">
+                    <label for="includeTDS">TDS compliances</label>
+                </div>
+                <div id="tdsContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="tdsFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Monthly/Quarterly" selected>Monthly/Quarterly</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="tdsFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeIncomeTax" name="includeIncomeTax" onchange="toggleService('incomeTaxContent')">
+                    <label for="includeIncomeTax">Annual Income tax return</label>
+                </div>
+                <div id="incomeTaxContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="incomeTaxFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual" selected>Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="incomeTaxReturnFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="subsection-title">Indirect Tax Compliances</h3>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeGSTComp" name="includeGSTComp" onchange="toggleService('gstCompContent')">
+                    <label for="includeGSTComp">GST Compliances</label>
+                </div>
+                <div id="gstCompContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="gstFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Monthly and Annual" selected>Monthly and Annual</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="gstComplianceFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="subsection-title">Company Law</h3>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeCompanyLaw" name="includeCompanyLaw" onchange="toggleService('companyLawContent')">
+                    <label for="includeCompanyLaw">Company Law Compliances</label>
+                </div>
+                <div id="companyLawContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="companyLawFrequency">
+                                <option value="Monthly" selected>Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="companyLawFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="subsection-title">Foreign Exchange Laws</h3>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeRBIFiling" name="includeRBIFiling" onchange="toggleService('rbiFilingContent')">
+                    <label for="includeRBIFiling">Annual Filings with RBI</label>
+                </div>
+                <div id="rbiFilingContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="rbiFilingFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual" selected>Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="rbiFilingFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeMasterFiling" name="includeMasterFiling" onchange="toggleService('masterFilingContent')">
+                    <label for="includeMasterFiling">Master Filing Form 3CEAA Part A</label>
+                </div>
+                <div id="masterFilingContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="masterFilingFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual" selected>Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="masterFilingFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="subsection-title">Accounting</h3>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeAcctSetup" name="includeAcctSetup" onchange="toggleService('acctSetupContent')">
+                    <label for="includeAcctSetup">Setup of accounting software</label>
+                </div>
+                <div id="acctSetupContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="acctSetupFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One time" selected>One time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="accountingSetupFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeAcctMaint" name="includeAcctMaint" onchange="toggleService('acctMaintContent')">
+                    <label for="includeAcctMaint">Accounting and maintenance of books</label>
+                </div>
+                <div id="acctMaintContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="acctMaintFrequency">
+                                <option value="Monthly" selected>Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Monthly Fee (USD)</label>
+                            <input type="number" name="accountingMaintenanceFee" value="200" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="nested-table-container">
+                        <div class="nested-table-title">Transaction Volume & Pricing Tiers</div>
+                        <div id="accountingEntriesContainer"></div>
+                        <button type="button" class="add-entry-btn" onclick="addAccountingEntry()">+ Add Pricing Tier</button>
+                    </div>
+                </div>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeFinStmt" name="includeFinStmt" onchange="toggleService('finStmtContent')">
+                    <label for="includeFinStmt">Preparation of financial Statements</label>
+                </div>
+                <div id="finStmtContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="finStmtFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual" selected>Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="financialStatementsFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="subsection-title">Payroll Services</h3>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includePayrollSetup" name="includePayrollSetup" onchange="toggleService('payrollSetupContent')">
+                    <label for="includePayrollSetup">Payroll Setup</label>
+                </div>
+                <div id="payrollSetupContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="payrollSetupFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One time" selected>One time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="payrollSetupFee" value="500" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeShopPOSH" name="includeShopPOSH" onchange="toggleService('shopPOSHContent')">
+                    <label for="includeShopPOSH">Shop & Establishment + POSH</label>
+                </div>
+                <div id="shopPOSHContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="shopPOSHFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One time" selected>One time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="shopPOSHFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includePayrollProc" name="includePayrollProc" onchange="toggleService('payrollProcContent')">
+                    <label for="includePayrollProc">Payroll Processing</label>
+                </div>
+                <div id="payrollProcContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="payrollProcFrequency">
+                                <option value="Monthly" selected>Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Monthly Fee (USD)</label>
+                            <input type="number" name="payrollProcessingFee" value="125" min="0">
+                        </div>
+                    </div>
+
+                    <div class="nested-table-container">
+                        <div class="nested-table-title">Employee Range & Pricing Tiers</div>
+                        <div id="payrollEntriesContainer"></div>
+                        <button type="button" class="add-entry-btn" onclick="addPayrollEntry()">+ Add Employee Range</button>
+                    </div>
+                </div>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeLabourLaw" name="includeLabourLaw" onchange="toggleService('labourLawContent')">
+                    <label for="includeLabourLaw">Labour Law Compliances</label>
+                </div>
+                <div id="labourLawContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="labourLawFrequency">
+                                <option value="Monthly" selected>Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual">Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="labourLawFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-checkbox">
+                    <input type="checkbox" id="includeAnnualReturns" name="includeAnnualReturns" onchange="toggleService('annualReturnsContent')">
+                    <label for="includeAnnualReturns">Annual Returns</label>
+                </div>
+                <div id="annualReturnsContent" class="service-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select name="annualReturnsFrequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="One-time">One-time</option>
+                                <option value="Quarterly">Quarterly</option>
+                                <option value="Annual" selected>Annual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="annualReturnsFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- D. Transfer Pricing -->
+            <div class="section">
+                <h2>D. Transfer Pricing Compliances</h2>
+                
+                <div class="service-checkbox">
+                    <input type="checkbox" id="sectionD" name="sectionD" onchange="toggleSection('sectionDContent')">
+                    <label for="sectionD">Enable Transfer Pricing Services</label>
+                </div>
+                
+                <div id="sectionDContent" class="service-content">
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeBenchmarking" name="includeBenchmarking" onchange="toggleService('benchmarkingContent')">
+                        <label for="includeBenchmarking">Benchmarking (One-time)</label>
+                    </div>
+                    <div id="benchmarkingContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="benchmarkingFee" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="service-checkbox">
+                        <input type="checkbox" id="includeIntercompany" name="includeIntercompany" onchange="toggleService('intercompanyContent')">
+                        <label for="includeIntercompany">Inter-company Agreement Drafting</label>
+                    </div>
+                    <div id="intercompanyContent" class="service-content">
+                        <div class="form-group">
+                            <label>Fee (USD)</label>
+                            <input type="number" name="intercompanyAgreementFee" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="generate-btn">Generate Proposal PDF</button>
+            <button type="button" class="generate-btn" onclick="generateWord()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-left: 20px;">
+    📝 Generate Word
+</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; color: #667eea; font-weight: 600;">Generating your proposal...</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            ✓ Proposal generated successfully! Download will start automatically.
+        </div>
+    </div>
+
+    <script>
+        let accountingEntryCount = 0;
+        let payrollEntryCount = 0;
+
+        function toggleSection(contentId) {
+            const content = document.getElementById(contentId);
+            content.classList.toggle('active');
+        }
+
+        function toggleService(contentId) {
+            const content = document.getElementById(contentId);
+            content.classList.toggle('active');
+            
+            if (content.classList.contains('active')) {
+                if (contentId === 'acctMaintContent' && accountingEntryCount === 0) {
+                    addAccountingEntry('Upto 20', '200');
+                    addAccountingEntry('20 - 50', '250');
+                    addAccountingEntry('50-80', '300');
+                }
+                if (contentId === 'payrollProcContent' && payrollEntryCount === 0) {
+                    addPayrollEntry('Upto 10 employees', '125 USD');
+                    addPayrollEntry('11 - 20 employees', '200 USD');
+                }
+            }
+        }
+
+        function addAccountingEntry(defaultTransactions = '', defaultFee = '') {
+            const container = document.getElementById('accountingEntriesContainer');
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'nested-entry';
+            entryDiv.innerHTML = `
+                <div class="form-group">
+                    <label>No. of Transactions per Month</label>
+                    <input type="text" name="accountingEntries[${accountingEntryCount}][transactions]" value="${defaultTransactions}" placeholder="e.g., Upto 20" required>
+                </div>
+                <div class="form-group">
+                    <label>Fee per Month (USD)</label>
+                    <input type="number" name="accountingEntries[${accountingEntryCount}][fee]" value="${defaultFee}" min="0" required>
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-end;">
+                    <button type="button" class="remove-entry-btn" onclick="removeEntry(this)">Remove</button>
+                </div>
+            `;
+            container.appendChild(entryDiv);
+            accountingEntryCount++;
+        }
+
+        function addPayrollEntry(defaultEmployees = '', defaultAmount = '') {
+            const container = document.getElementById('payrollEntriesContainer');
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'nested-entry';
+            entryDiv.innerHTML = `
+                <div class="form-group">
+                    <label>No. of Employees</label>
+                    <input type="text" name="payrollEntries[${payrollEntryCount}][employees]" value="${defaultEmployees}" placeholder="e.g., Upto 10 employees" required>
+                </div>
+                <div class="form-group">
+                    <label>Amount in USD per Month</label>
+                    <input type="text" name="payrollEntries[${payrollEntryCount}][amount]" value="${defaultAmount}" placeholder="e.g., 125 USD" required>
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-end;">
+                    <button type="button" class="remove-entry-btn" onclick="removeEntry(this)">Remove</button>
+                </div>
+            `;
+            container.appendChild(entryDiv);
+            payrollEntryCount++;
+        }
+
+        function removeEntry(button) {
+            button.closest('.nested-entry').remove();
+        }
+
+        document.getElementById('proposalForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                if (!key.includes('[')) {
+                    data[key] = value;
+                }
+            }
+            
+            data.accountingEntries = [];
+            const accountingInputs = document.querySelectorAll('[name^="accountingEntries"]');
+            const accountingGroups = {};
+            
+            accountingInputs.forEach(input => {
+                const match = input.name.match(/accountingEntries\[(\d+)\]\[(\w+)\]/);
+                if (match) {
+                    const index = match[1];
+                    const field = match[2];
+                    if (!accountingGroups[index]) {
+                        accountingGroups[index] = {};
+                    }
+                    accountingGroups[index][field] = input.value;
+                }
+            });
+            
+            for (let index in accountingGroups) {
+                data.accountingEntries.push(accountingGroups[index]);
+            }
+            
+            data.payrollEntries = [];
+            const payrollInputs = document.querySelectorAll('[name^="payrollEntries"]');
+            const payrollGroups = {};
+            
+            payrollInputs.forEach(input => {
+                const match = input.name.match(/payrollEntries\[(\d+)\]\[(\w+)\]/);
+                if (match) {
+                    const index = match[1];
+                    const field = match[2];
+                    if (!payrollGroups[index]) {
+                        payrollGroups[index] = {};
+                    }
+                    payrollGroups[index][field] = input.value;
+                }
+            });
+            
+            for (let index in payrollGroups) {
+                data.payrollEntries.push(payrollGroups[index]);
+            }
+            
+            document.getElementById('loading').style.display = 'block';
+            document.querySelector('.generate-btn').disabled = true;
+            
+            try {
+                const response = await fetch('/generate_proposal', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `InCorp_Proposal_${data.clientCompany}_${new Date().toISOString().split('T')[0]}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    document.getElementById('successMessage').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                } else {
+                    alert('Error generating proposal. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error generating proposal. Please check your connection and try again.');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.querySelector('.generate-btn').disabled = false;
+            }
+        });
+        async function generateWord() {
+    const formData = new FormData(document.getElementById('proposalForm'));
+    const data = {};
+    
+    for (let [key, value] of formData.entries()) {
+        if (!key.includes('[')) {
+            data[key] = value;
+        }
+    }
+    
+    // Add accounting entries
+    data.accountingEntries = [];
+    const accountingInputs = document.querySelectorAll('[name^="accountingEntries"]');
+    const accountingGroups = {};
+    accountingInputs.forEach(input => {
+        const match = input.name.match(/accountingEntries\[(\d+)\]\[(\w+)\]/);
+        if (match) {
+            const index = match[1];
+            const field = match[2];
+            if (!accountingGroups[index]) accountingGroups[index] = {};
+            accountingGroups[index][field] = input.value;
+        }
+    });
+    for (let index in accountingGroups) {
+        data.accountingEntries.push(accountingGroups[index]);
+    }
+    
+    // Add payroll entries
+    data.payrollEntries = [];
+    const payrollInputs = document.querySelectorAll('[name^="payrollEntries"]');
+    const payrollGroups = {};
+    payrollInputs.forEach(input => {
+        const match = input.name.match(/payrollEntries\[(\d+)\]\[(\w+)\]/);
+        if (match) {
+            const index = match[1];
+            const field = match[2];
+            if (!payrollGroups[index]) payrollGroups[index] = {};
+            payrollGroups[index][field] = input.value;
+        }
+    });
+    for (let index in payrollGroups) {
+        data.payrollEntries.push(payrollGroups[index]);
+    }
+    
+    document.getElementById('loading').style.display = 'block';
+    
+    try {
+        const response = await fetch('/generate_proposal_word', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `InCorp_Proposal_${data.clientCompany}_${new Date().toISOString().split('T')[0]}.docx`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            document.getElementById('successMessage').textContent = '✓ Word document generated!';
+            document.getElementById('successMessage').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 5000);
+        } else {
+            alert('Error generating Word document');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error generating Word document');
+    } finally {
+        document.getElementById('loading').style.display = 'none';
+    }
+}
+    </script>
+</body>
+</html>
