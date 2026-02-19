@@ -1,36 +1,45 @@
-# Use Python 3.12 slim base image
+# Use Python 3.12 slim (Debian Bookworm - stable)
 FROM python:3.12-slim
 
-# Install system dependencies needed for opencv and pdf processing
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies for opencv and pdf2docx
 RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
-    libxrender-dev \
+    libxrender1 \
     libgomp1 \
     libxcb1 \
     libx11-6 \
+    libgthread-2.0-0 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements file
+# Copy requirements first (for better caching)
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python packages
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copy all application files
+# Copy application files
 COPY . .
 
-# Create static_pdfs directory if it doesn't exist
+# Create necessary directories
 RUN mkdir -p static_pdfs
 
-# Expose port (Railway uses PORT environment variable)
+# Expose port
 EXPOSE 8080
+
+# Set PORT environment variable for Railway
+ENV PORT=8080
 
 # Run the application
 CMD ["python", "app.py"]
